@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/algebrite/0.2.1/algebrite.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.0.0/math.min.js"></script>
+    <title>Aplikasi KALKULUS PEUBAH BANYAK</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background: linear-gradient(270deg, #baf1a1, #ffd5a1); /* Hijau pastel (#baf1a1) ke oranye pastel (#ffd5a1) */
+            background-size: 400% 400%; /* Mengatur ukuran background agar bergerak */
+            animation: gradientMove 10s ease infinite; /* Efek gradasi bergerak */
+        }
+
+        /* Keyframes untuk membuat animasi gradasi bergerak */
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        label {
+            margin-top: 10px;
+            display: block;
+        }
+        input, select, button {
+            margin: 5px 0 20px;
+            padding: 10px;
+            width: 100%;
+            max-width: 400px;
+        }
+        #history {
+            max-height: 200px;
+            overflow-y: auto;
+            background: #fff;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 align="center">Aplikasi KALKULUS</h1>
+
+    <h2>Kalkulator Operasi Matematika</h2>
+    <label>Angka Pertama:</label>
+    <input type="number" id="num1">
+
+    <label>Angka Kedua:</label>
+    <input type="number" id="num2">
+
+    <label>Operator:</label>
+    <select id="operator">
+        <option value="+">+</option>
+        <option value="-">-</option>
+        <option value="*">*</option>
+        <option value="/">/</option>
+        <option value="sin">sin</option>
+        <option value="cos">cos</option>
+        <option value="tan">tan</option>
+        <option value="log">log</option>
+        <option value="sqrt">sqrt</option>
+    </select>
+
+    <button onclick="hitung()">Hitung</button>
+    <div id="hasil_kalkulator">Hasil: </div>
+
+    <h2>Kalkulus</h2>
+    <label for="function">Masukkan fungsi f(x) (gunakan 'x' sebagai variabel):</label><br>
+    <input type="text" id="function" placeholder="Contoh: x^2 - 4"><br><br>
+    <label for="point">Masukkan titik x untuk turunan:</label><br>
+    <input type="number" id="point" step="any"><br><br>
+    <button onclick="calculateDerivative()">Hitung Turunan : </button>
+
+    <label for="lowerLimit">Masukkan batas bawah untuk integral:</label><br>
+    <input type="number" id="lowerLimit" step="any"><br><br>
+    <label for="upperLimit">Masukkan batas atas untuk integral:</label><br>
+    <input type="number" id="upperLimit" step="any"><br><br>
+    <button onclick="calculateIntegral()">Hitung Integral : </button>
+    <div id="hasil_turunan_integral">Hasil: </div>
+    <h2 id="derivativeResult"></h2>
+    <h2 id="integralResult"></h2>
+    
+
+    <h2>Limit dan Kontinuitas</h2>
+    <label for="function">Masukkan fungsi f(x) (gunakan 'x' sebagai variabel):</label><br>
+    <input type="text" id="function" placeholder="Contoh: x**2 - 4"><br><br>
+    
+    <label for="point">Masukkan titik x:</label><br>
+    <input type="number" id="point" step="any"><br><br>
+    
+    <button onclick="calculateLimit()">Hitung Limit dan Kekontinuitas</button>
+    <div id="hasil_limit_dan_kekontiunitas">Hasil: </div>
+    <h5 id="limitResult"></h5>
+    <h5 id="continuityResult"></h5>
+
+    <h2>Aturan Rantai</h2>
+    <label>Masukkan Fungsi f(x):</label>
+    <input type="text" id="fungsi_f">
+
+    <label>Masukkan Fungsi g(x):</label>
+    <input type="text" id="fungsi_g">
+    <button onclick="hitungTurunanRantai()">Hitung Turunan Rantai</button>
+    <div id="hasil_turunan_rantai">Hasil: </div>
+
+    <h2>History Operasi:</h2>
+    <div id="history"></div>
+    <button onclick="bersihkanHistory()">Bersihkan History</button>
+
+    <script>
+        function hitung() {
+            const num1 = parseFloat(document.getElementById('num1').value);
+            const num2 = parseFloat(document.getElementById('num2').value);
+            const operator = document.getElementById('operator').value;
+            let result;
+
+            switch (operator) {
+                case '+': result = num1 + num2; break;
+                case '-': result = num1 - num2; break;
+                case '*': result = num1 * num2; break;
+                case '/': 
+                    if (num2 === 0) {
+                        alert("Pembagian dengan nol tidak diperbolehkan!");
+                        return;
+                    }
+                    result = num1 / num2; 
+                    break;
+                case 'sin': result = Math.sin(num1); break;
+                case 'cos': result = Math.cos(num1); break;
+                case 'tan': result = Math.tan(num1); break;
+                case 'log': result = Math.log(num1); break;
+                case 'sqrt': result = Math.sqrt(num1); break;
+                default: alert("Operator tidak valid!"); return;
+            }
+
+            document.getElementById('hasil_kalkulator').innerHTML = `Hasil: ${result}`;
+            document.getElementById('history').innerHTML += `Kalkulator: ${num1} ${operator} ${num2} = ${result}<br>`;
+        }
+
+        function calculateDerivative() {
+            const func = document.getElementById('function').value;
+            const point = parseFloat(document.getElementById('point').value);
+            try {
+                const derivative = math.derivative(func, 'x');
+                const derivativeValue = derivative.evaluate({ x: point });
+                document.getElementById('derivativeResult').innerText = `Turunan f(x) = ${derivative.toString()} dan f'(${point}) = ${derivativeValue}`;
+            } catch (error) {
+                document.getElementById('derivativeResult').innerText = "Error dalam menghitung turunan.";
+            }
+        }
+
+        function calculateIntegral() {
+            const func = document.getElementById('function').value;
+            const lowerLimit = parseFloat(document.getElementById('lowerLimit').value);
+            const upperLimit = parseFloat(document.getElementById('upperLimit').value);
+            const numIntervals = 1000; // Jumlah interval untuk metode trapezoidal
+            const h = (upperLimit - lowerLimit) / numIntervals;
+
+            let integralValue = 0.5 * (math.evaluate(func, { x: lowerLimit }) + math.evaluate(func, { x: upperLimit }));
+
+            for (let i = 1; i < numIntervals; i++) {
+                const x = lowerLimit + i * h;
+                integralValue += math.evaluate(func, { x: x });
+            }
+
+            integralValue *= h;
+
+            document.getElementById('integralResult').innerText = `∫[${lowerLimit}, ${upperLimit}] f(x) dx ≈ ${integralValue}`;
+        }
+
+        function calculateLimit() {
+            const func = document.getElementById('function').value;
+            const point = parseFloat(document.getElementById('point').value);
+            let limitValue;
+
+            try {
+                limitValue = eval(func.replace(/x/g, point));
+            } catch (error) {
+                limitValue = "Error dalam menghitung limit.";
+            }
+
+            document.getElementById('limitResult').innerText = `Limit f(x) saat x mendekati ${point} adalah: ${limitValue}`;
+            checkContinuity(func, point);
+        }
+
+        function checkContinuity(func, point) {
+            let leftLimit, rightLimit, functionValue;
+
+            try {
+                leftLimit = eval(func.replace(/x/g, point - 0.0001));
+                rightLimit = eval(func.replace(/x/g, point + 0.0001));
+                functionValue = eval(func.replace(/x/g, point));
+            } catch (error) {
+                document.getElementById('continuityResult').innerText = "Error dalam memeriksa kekontinuitas.";
+                return;
+            }
+
+            const isContinuous = (leftLimit === rightLimit) && (leftLimit === functionValue);
+            const continuityMessage = isContinuous ? "Fungsi adalah kontinu di titik tersebut." : "Fungsi tidak kontinu di titik tersebut.";
+            document.getElementById('continuityResult').innerText = continuityMessage;
+        }
+
+        function hitungTurunanRantai() {
+            const fungsi_f = document.getElementById('fungsi_f').value;
+            const fungsi_g = document.getElementById('fungsi_g').value;
+
+            try {
+                const f_derivative = math.derivative(fungsi_f, 'x').toString();
+                const g_derivative = math.derivative(fungsi_g, 'x').toString();
+                const rantai = `(${f_derivative}) * (${g_derivative})`;
+
+                document.getElementById('hasil_turunan_rantai').innerHTML = `Turunan Rantai: ${rantai}`;
+                document.getElementById('history').innerHTML += `Turunan rantai dari f(x) dan g(x): ${rantai}<br>`;
+            } catch (error) {
+                alert("Ekspresi tidak valid.");
+            }
+        }
+
+        function bersihkanHistory() {
+            document.getElementById('history').innerHTML = '';
+        }
+    </script>
+</body>
+</html>
